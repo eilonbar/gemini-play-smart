@@ -3,8 +3,9 @@
 The illustrations are authored as HTML/CSS rather than drawn, so the numbers in
 them stay editable and reviewable in a diff like every other claim in this repo.
 
-    python docs/render_concept.py             # docs/concept.html  -> concept.png
-    python docs/render_concept.py depth_sweep # docs/depth_sweep.html -> .png
+    python docs/render_concept.py              # docs/concept.html  -> concept.png
+    python docs/render_concept.py depth_sweep  # docs/depth_sweep.html -> .png
+    python docs/render_concept.py ladder_table # docs/ladder_table.html -> .png
 
 Requires ``weasyprint`` (HTML to PDF) and ``pymupdf`` (PDF to PNG), neither of
 which is a runtime dependency of ``play_smart``:
@@ -19,9 +20,11 @@ import pathlib
 
 HERE = pathlib.Path(__file__).parent
 
-#: Medium serves images up to ~1400px wide and doubles that on retina screens.
-#: The pages are 800pt, so 2.5x lands at 2000px.
-SCALE = 2.5
+#: Medium serves images up to ~1400px wide and doubles that on retina screens,
+#: but its lightbox lets a reader enlarge past both. The pages are 800pt, so 5x
+#: lands at 4000px — enough that zooming into a figure still shows type rather
+#: than pixels.
+SCALE = 5.0
 
 
 def main() -> None:

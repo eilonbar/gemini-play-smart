@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Play Smart — the default ladder</title>
+<style>
+  :root {
+    --ink:   #14181f;
+    --muted: #5b6472;
+    --line:  #e4e8ee;
+    --accent:#1a73e8;
+  }
+
+  @page { size: 800pt 272pt; margin: 0; }
+
+  * { box-sizing: border-box; }
+
+  /* The article renders this ladder as a markdown table; Medium cannot, so the
+     same six rows are authored here and rasterised. Keep the two in step — the
+     numbers are the shipped defaults in play_smart/presets.py. */
+  body {
+    margin: 0;
+    padding: 26pt 34pt;
+    width: 800pt; height: 272pt;
+    font-family: "DejaVu Sans", sans-serif;
+    color: var(--ink);
+    background: #fff;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  th {
+    font-size: 9.6pt; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+    text-align: left; padding: 0 10pt 9pt 0;
+    border-bottom: 1pt solid var(--line);
+  }
+
+  td {
+    font-size: 13pt; padding: 8.5pt 10pt 8.5pt 0;
+    border-bottom: 0.8pt solid var(--line);
+  }
+
+  tr:last-child td { border-bottom: 0; }
+
+  .mono { font-family: "DejaVu Sans Mono", monospace; font-size: 12pt; }
+
+  /* The step number sits in a filled disc, so the eye can count the rungs
+     without reading them. */
+  .num {
+    display: inline-block; width: 17pt; height: 17pt;
+    border-radius: 9pt; background: var(--ink); color: #fff;
+    font-size: 10.4pt; font-weight: 700; text-align: center; line-height: 17pt;
+  }
+
+  th.n, td.n { width: 30pt; padding-right: 0; }
+
+  /* The 60-second Flex cap is the one number the article argues about. */
+  .bet { color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<table>
+  <tr>
+    <th class="n">#</th>
+    <th>Step</th>
+    <th>Consumption option</th>
+    <th>Model</th>
+    <th>Endpoint</th>
+    <th>Timeout</th>
+    <th>Attempts per step</th>
+  </tr>
+  <tr>
+    <td class="n"><span class="num">1</span></td>
+    <td class="mono">flex</td>
+    <td>Flex PayGo</td>
+    <td class="mono">gemini-3.7-flash</td>
+    <td class="mono">global</td>
+    <td class="bet">60 s</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td class="n"><span class="num">2</span></td>
+    <td class="mono">standard</td>
+    <td>Standard PayGo</td>
+    <td class="mono">gemini-3.7-flash</td>
+    <td class="mono">global</td>
+    <td>60 s</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td class="n"><span class="num">3</span></td>
+    <td class="mono">priority</td>
+    <td>Priority PayGo</td>
+    <td class="mono">gemini-3.7-flash</td>
+    <td class="mono">global</td>
+    <td>30 s</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td class="n"><span class="num">4</span></td>
+    <td class="mono">alternative_model</td>
+    <td>Standard PayGo</td>
+    <td class="mono">gemini-3.6-flash</td>
+    <td class="mono">global</td>
+    <td>30 s</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td class="n"><span class="num">5</span></td>
+    <td class="mono">multi_region_us</td>
+    <td>Standard PayGo</td>
+    <td class="mono">gemini-3.6-flash</td>
+    <td class="mono">us</td>
+    <td>60 s</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td class="n"><span class="num">6</span></td>
+    <td class="mono">multi_region_eu</td>
+    <td>Standard PayGo</td>
+    <td class="mono">gemini-3.6-flash</td>
+    <td class="mono">eu</td>
+    <td>60 s</td>
+    <td>2</td>
+  </tr>
+</table>
+
+</body>
+</html>
