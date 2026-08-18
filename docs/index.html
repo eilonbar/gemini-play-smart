@@ -129,6 +129,10 @@
     border-radius: 2.82px; font-size: 7.14pt; line-height: 1.45; overflow-x: auto;
   }
 
+  /* The clone URL is clickable, but a code block should still read as code:
+     inherit the colour rather than take the accent. */
+  pre a { color: inherit; text-decoration: none; }
+
   /* ---------- footer ---------- */
   footer {
     border-top: 0.94px solid var(--ink); margin-top: 7px; padding-top: 5px;
@@ -157,6 +161,7 @@
   @media print {
     body { padding: 9mm 14mm; }
     a { color: var(--accent) !important; }
+    pre a { color: inherit !important; }
   }
 </style>
 </head>
@@ -244,12 +249,12 @@
       <h3>Read the article</h3>
       <p>The ladder step by step, the two headers, the 60-second Flex bet, and all 21 traversals with the
       attempt trails.</p>
-      <a class="go" href="https://github.com/eilonbar/gemini-play-smart/blob/main/ARTICLE.md">Gemini Play Smart &mdash; a 429-survival capacity ladder &rarr;</a>
+      <a class="go" href="https://medium.com/@eilonbar/gemini-play-smart-a-429-survival-capacity-ladder-420318216917?sharedUserId=eilonbar">Gemini Play Smart &mdash; a 429-survival capacity ladder &rarr;</a>
     </div>
     <div class="card">
       <h3>Run it against your project</h3>
       <p>Your entitlements, your quota, your regions. The 429 is real and free to summon &mdash; no simulation.</p>
-<pre>git clone https://github.com/eilonbar/gemini-play-smart
+<pre>git clone <a href="https://github.com/eilonbar/gemini-play-smart">https://github.com/eilonbar/gemini-play-smart</a>
 cd gemini-play-smart
 
 python3 run.py</pre>
