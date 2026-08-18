@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Play Smart — one answer, three lanes tried</title>
+<style>
+  :root {
+    --ink:   #14181f;
+    --muted: #5b6472;
+    --line:  #d9dee6;
+    --accent:#1a73e8;
+    --warn:  #b3261e;
+    --wash:  #f5f7fa;
+    --good:  #0b7a52;
+  }
+
+  @page { size: 800pt 314pt; margin: 0; }
+
+  * { box-sizing: border-box; }
+
+  /* WeasyPrint's flexbox support is partial, so the layout is built from
+     inline-blocks at fixed widths. The answer box is deliberately the same
+     width as a lane and sits directly above the lane that produced it. */
+  body {
+    margin: 0;
+    padding: 24pt 34pt 20pt;
+    width: 800pt; height: 314pt;
+    font-family: "DejaVu Sans", sans-serif;
+    color: var(--ink);
+    background: #fff;
+  }
+
+  h1 {
+    margin: 0 0 9pt;
+    font-size: 21pt; line-height: 1.18; font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  h1 .dim { font-size: 18pt; color: var(--muted); font-weight: 400; }
+
+  .deck {
+    margin: 0 0 19pt;
+    font-size: 10.4pt; line-height: 1.4; color: var(--muted);
+    max-width: 730pt;
+  }
+
+  .deck b { color: var(--ink); font-weight: 700; }
+
+  .tier-label {
+    font-size: 7.8pt; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 8pt;
+  }
+
+  .band { font-size: 0; }
+
+  .band .cell { display: inline-block; vertical-align: middle; font-size: 10pt; }
+
+  /* ---------- above the line: the caller ---------- */
+  .who { width: 62pt; }
+
+  .flow { width: 442pt; text-align: center; }
+
+  .flow .txt { font-size: 9pt; color: var(--muted); }
+
+  .flow svg { display: block; margin: 4pt auto 0; }
+
+  .answer {
+    width: 212pt;
+    border: 1.4pt solid var(--good); border-radius: 5pt;
+    padding: 9pt 14pt; background: #f2faf6;
+  }
+
+  .answer .big { font-size: 16pt; font-weight: 700; color: var(--good); }
+
+  .answer .sub { font-size: 8.6pt; color: var(--muted); margin-top: 2pt; }
+
+  /* ---------- the waterline ---------- */
+  .waterline {
+    margin: 17pt 0 15pt;
+    border: 0; border-top: 1.2pt dashed var(--line);
+  }
+
+  /* ---------- below the line: the ladder ---------- */
+  .lane {
+    width: 212pt;
+    border: 1pt solid var(--line); border-radius: 5pt;
+    padding: 8pt 14pt; background: var(--wash);
+  }
+
+  .lane .model {
+    font-family: "DejaVu Sans Mono", monospace;
+    font-size: 8.4pt; color: var(--muted); margin-bottom: 2pt;
+  }
+
+  .lane .name {
+    font-size: 11pt; font-weight: 700; color: var(--muted);
+  }
+
+  .lane .verdict { font-size: 8.6pt; font-weight: 700; color: var(--warn); margin-top: 3pt; }
+
+  .lane.win { border-color: var(--good); border-width: 1.4pt; background: #f2faf6; }
+
+  .lane.win .model,
+  .lane.win .name { color: var(--ink); }
+
+  .lane.win .verdict { color: var(--good); }
+
+  .hop { width: 40pt; text-align: center; color: var(--line); font-size: 17pt; }
+
+  /* ---------- footer ---------- */
+  .foot { margin-top: 18pt; font-size: 9.4pt; color: var(--muted); }
+
+  .foot b { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<h1>Happy user, got their answer, no failure.<br>
+<span class="dim">Underneath, the ladder was refused twice and answered on the third step.</span></h1>
+
+<p class="deck">You customise the ladder as you wish in each step &mdash;
+  a different <b>tier</b>, <b>model</b> or <b>endpoint</b>.</p>
+
+<div class="tier-label">What the user sees</div>
+<div class="band">
+  <span class="cell who">
+    <svg width="52pt" height="52pt" viewBox="0 0 64 64" fill="none"
+         stroke="#1a73e8" stroke-width="3.4" stroke-linecap="round">
+      <circle cx="32" cy="21" r="13"/>
+      <circle cx="27" cy="18" r="1" fill="#1a73e8" stroke="none"/>
+      <circle cx="37" cy="18" r="1" fill="#1a73e8" stroke="none"/>
+      <path d="M26 25 Q32 30.5 38 25"/>
+      <path d="M11 57 Q11 40 32 40 Q53 40 53 57"/>
+    </svg>
+  </span>
+  <span class="cell flow">
+    <span class="txt">one request, one call, no error handling</span>
+    <svg width="360pt" height="10pt" viewBox="0 0 360 10">
+      <line x1="0" y1="5" x2="348" y2="5" stroke="#d9dee6" stroke-width="1.6"/>
+      <polygon points="347,0.5 359,5 347,9.5" fill="#d9dee6"/>
+    </svg>
+  </span>
+  <span class="cell answer">
+    <div class="big">200 OK</div>
+    <div class="sub">no 429 ever reached the user</div>
+  </span>
+</div>
+
+<hr class="waterline">
+
+<div class="tier-label">What the client actually did</div>
+<div class="band">
+  <span class="cell lane">
+    <div class="model">gemini-3.7-flash</div>
+    <div class="name">Flex</div>
+    <div class="verdict">429 &middot; refused</div>
+  </span>
+  <span class="cell hop">&#8594;</span>
+  <span class="cell lane">
+    <div class="model">gemini-3.7-flash</div>
+    <div class="name">Standard PayGo</div>
+    <div class="verdict">429 &middot; refused</div>
+  </span>
+  <span class="cell hop">&#8594;</span>
+  <span class="cell lane win">
+    <div class="model">gemini-3.7-flash</div>
+    <div class="name">Priority PayGo</div>
+    <div class="verdict">200 &middot; answered</div>
+  </span>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Play Smart — 21 traversals, every one forced to fail</title>
+<style>
+  :root {
+    --ink:   #14181f;
+    --muted: #5b6472;
+    --line:  #d9dee6;
+    --accent:#1a73e8;
+    --warn:  #b3261e;
+    --wash:  #f5f7fa;
+    --good:  #0b7a52;
+  }
+
+  @page { size: 800pt 465pt; margin: 0; }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 24pt 34pt 18pt;
+    width: 800pt; height: 465pt;
+    font-family: "DejaVu Sans", sans-serif;
+    color: var(--ink);
+    background: #fff;
+  }
+
+  h1 {
+    margin: 0 0 8pt;
+    font-size: 21pt; line-height: 1.18; font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  h1 .dim { font-size: 18pt; color: var(--muted); font-weight: 400; }
+
+  .deck {
+    margin: 0 0 16pt;
+    font-size: 10.4pt; line-height: 1.4; color: var(--muted);
+    max-width: 730pt;
+  }
+
+  .deck b { color: var(--ink); font-weight: 700; }
+
+  /* A table is the honest element here: rows are runs, columns are steps.
+     Separate, not collapse -- the 3pt of vertical air is what makes each step
+     read as its own chip instead of one poisoned slab. */
+  table { width: 732pt; border-collapse: separate; border-spacing: 0 3pt; }
+
+  th, td { padding: 0; }
+
+  /* ---------- column headings: the six steps ---------- */
+  thead th {
+    font-family: "DejaVu Sans Mono", monospace;
+    font-size: 7.2pt; font-weight: 400; color: var(--muted);
+    text-align: center; padding-bottom: 5pt;
+  }
+
+  thead th.corner, thead th.time {
+    font-family: "DejaVu Sans", sans-serif;
+    font-size: 6.9pt; font-weight: 700; letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+
+  thead th.corner { text-align: left; }
+
+  thead th.time { text-align: left; padding-left: 8pt; }
+
+  /* ---------- rows: one forced-failure depth each ---------- */
+  .depth {
+    width: 52pt; text-align: left;
+    font-size: 9.4pt; font-weight: 700; color: var(--muted);
+  }
+
+  .cell {
+    width: 88pt; height: 30pt;
+    border: 1pt solid transparent;
+    border-radius: 4pt;
+    text-align: center; vertical-align: middle;
+  }
+
+  /* a step poisoned into a real 429 before the run started */
+  .forced {
+    background: #fdf1f0; border-color: #f0d6d3;
+    color: var(--warn); font-size: 8.4pt; font-weight: 700;
+  }
+
+  /* the first live step -- the one that answered */
+  .won {
+    background: #f2faf6; border-color: var(--good); border-width: 1.4pt;
+    color: var(--good); font-size: 9pt; font-weight: 700;
+  }
+
+  /* never reached: the ladder stopped above it */
+  .idle { color: var(--line); font-size: 11pt; }
+
+  .gap { width: 4pt; }
+
+  /* ---------- the time column ---------- */
+  .time { padding-left: 8pt; white-space: nowrap; }
+
+  .bar {
+    display: inline-block; height: 7pt; border-radius: 3.5pt;
+    background: #c6d4e8; vertical-align: middle;
+  }
+
+  .bar.dead { background: #eccbc7; }
+
+  .secs {
+    display: inline-block; margin-left: 5pt; vertical-align: middle;
+    font-size: 8.6pt; font-weight: 700; color: var(--muted);
+  }
+
+  .row-note {
+    display: inline-block; margin-left: 6pt; vertical-align: middle;
+    font-size: 7.6pt; color: var(--muted);
+  }
+
+  /* ---------- footer ---------- */
+  .foot {
+    margin-top: 13pt; padding-top: 9pt; border-top: 1pt solid var(--line);
+    font-size: 9pt; line-height: 1.45; color: var(--muted);
+  }
+
+  .foot b { color: var(--ink); }
+
+  .key { font-size: 8.2pt; color: var(--muted); margin-top: 3pt; }
+
+  .key .sw {
+    display: inline-block; width: 7pt; height: 7pt; border-radius: 2pt;
+    vertical-align: middle; margin: 0 3pt 0 0;
+  }
+
+  .key .sw.f { background: #fdf1f0; border: 1pt solid #f0d6d3; }
+  .key .sw.w { background: #f2faf6; border: 1pt solid var(--good); }
+  .key .sw.i { background: #fff; border: 1pt solid var(--line); }
+  .key .sep { margin: 0 8pt; color: var(--line); }
+</style>
+</head>
+<body>
+
+<h1>Every step refused, one depth at a time.<br>
+<span class="dim">21 traversals: each row poisons one more step, then lets the rest run live.</span></h1>
+
+<p class="deck">Forcing a 429 is free &mdash; asking for <b>dedicated</b> capacity on a project
+  with no reservation is refused instantly. Poison the first <b>k</b> steps and the
+  ladder must find the answer below them.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th class="corner">Forced 429s</th>
+      <th>flex</th><th class="gap"></th>
+      <th>standard</th><th class="gap"></th>
+      <th>priority</th><th class="gap"></th>
+      <th>alternative_model</th><th class="gap"></th>
+      <th>multi_region_us</th><th class="gap"></th>
+      <th>multi_region_eu</th>
+      <th class="time">Median, whole traversal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="depth">0</td>
+      <td class="cell won">200 OK</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td>
+      <td class="time"><span class="bar" style="width: 75pt"></span><span class="secs">11.5s</span></td>
+    </tr>
+    <tr>
+      <td class="depth">1</td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell won">200 OK</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td>
+      <td class="time"><span class="bar" style="width: 32pt"></span><span class="secs">4.9s</span></td>
+    </tr>
+    <tr>
+      <td class="depth">2</td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell won">200 OK</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td>
+      <td class="time"><span class="bar" style="width: 55pt"></span><span class="secs">8.5s</span></td>
+    </tr>
+    <tr>
+      <td class="depth">3</td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell won">200 OK</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td>
+      <td class="time"><span class="bar" style="width: 82pt"></span><span class="secs">12.6s</span></td>
+    </tr>
+    <tr>
+      <td class="depth">4</td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell won">200 OK</td><td class="gap"></td>
+      <td class="cell idle">&middot;</td>
+      <td class="time"><span class="bar" style="width: 97pt"></span><span class="secs">14.9s</span></td>
+    </tr>
+    <tr>
+      <td class="depth">5</td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell won">200 OK</td>
+      <td class="time"><span class="bar" style="width: 104pt"></span><span class="secs">16.0s</span></td>
+    </tr>
+    <tr>
+      <td class="depth">6</td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td><td class="gap"></td>
+      <td class="cell forced">429</td>
+      <td class="time"><span class="bar dead" style="width: 80pt"></span><span class="secs">12.3s</span><span class="row-note">raises &mdash; nothing left to try</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="foot">Every run landed on the first live step, and <b>six refusals cost 12.3
+  seconds</b> against a configured worst case of 637. A 429 comes back in under a
+  second, so the timeouts that dominate that worst case are never reached.</div>
+
+<div class="key">
+  <span class="sw f"></span>forced 429 <span class="sep">|</span>
+  <span class="sw w"></span>answered
+  <span class="sep">|</span>
+  <span class="sw i"></span>never reached <span class="sep">|</span>
+  median of three runs, one project, <code>demo/bench_ladder.py -n 3</code>
+</div>
+
+</body>
+</html>

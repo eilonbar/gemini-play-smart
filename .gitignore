@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.env
+.ipynb_checkpoints/
+
+# Local scratch
+*.log
+
+# Intermediate from docs/render_concept.py; the PNG is what ships
+docs/concept.pdf
+
+# Local backups of earlier drafts, not shipped
+ARTICLE.v1-backup.md
+ARTICLE.v2-backup.md
+README.v1-backup.md
+README.v2-backup.md
+
+# Scratch for the Medium paste; regenerate any time, never shipped
+publish/

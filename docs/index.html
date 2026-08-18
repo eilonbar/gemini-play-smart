@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Play Smart — driving Gemini 429s toward zero without reserving capacity</title>
+<meta name="description" content="A capacity ladder for the Gemini Agent Platform: when a request 429s, move across lanes, models and endpoints instead of retrying in place. No Provisioned Throughput order required.">
+<style>
+  :root {
+    --ink:      #14181f;
+    --muted:    #5b6472;
+    --line:     #d9dee6;
+    --accent:   #1a73e8;
+    --warn:     #b3261e;
+    --wash:     #f5f7fa;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0 auto;
+    padding: 14mm 15mm;
+    font: 9.40pt/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: #fff;
+    max-width: 210mm;
+  }
+
+  h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -0.014em; }
+
+  /* ---------- masthead ---------- */
+  header { margin-bottom: 10px; }
+
+  .eyebrow {
+    font-size: 7.14pt; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 6.58px;
+  }
+
+  h1 { font-size: 19.00pt; line-height: 1.06; }
+
+  h1 .thesis { color: var(--accent); }
+
+  .standfirst { margin: 7.5px 0 0; font-size: 9.40pt; line-height: 1.42; color: var(--muted); }
+
+  .standfirst strong { color: var(--ink); }
+
+  /* ---------- section headings ---------- */
+  section { margin-bottom: 6px; break-inside: avoid; }
+
+  h2 {
+    font-size: 7.52pt; letter-spacing: 0.13em; text-transform: uppercase;
+    color: var(--muted); border-bottom: 0.94px solid var(--ink);
+    padding-bottom: 3px; margin-bottom: 6px;
+  }
+
+  p { margin: 0; }
+
+  code, .mono {
+    font-family: "SF Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+  }
+
+  /* ---------- the ladder ---------- */
+  table { width: 100%; border-collapse: collapse; font-size: 8.46pt; }
+
+  th {
+    text-align: left; font-size: 6.77pt; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted); font-weight: 700;
+    padding: 0 9.4px 4.7px 0;
+  }
+
+  td { padding: 3.2px 9.4px 3.2px 0; border-top: 0.94px solid var(--line); white-space: nowrap; }
+
+  .stepno {
+    display: inline-block; width: 14.1px; height: 14.1px; line-height: 14.1px;
+    border-radius: 50%; background: var(--ink); color: #fff;
+    font-size: 6.58pt; text-align: center; font-weight: 700; margin-right: 6.58px;
+  }
+
+  /* The one variable that moved on this step. The whole argument, in colour. */
+  .moved { color: var(--accent); font-weight: 700; }
+
+  /* Ties the first preset back to the table above it. */
+  .above { color: var(--muted); }
+
+  .ladder-note { margin-top: 6px; font-size: 8.27pt; color: var(--muted); }
+
+  .ladder-note strong { color: var(--ink); }
+
+  /* The one-variable rule, as three lines rather than a paragraph: the shape
+     of the list is the point being made. */
+  ul.rule { margin: 4.7px 0 0; padding-left: 13.16px; font-size: 8.27pt; color: var(--muted); }
+
+  ul.rule li { margin-bottom: 1.88px; }
+
+  ul.rule strong { color: var(--ink); }
+
+  /* ---------- the number ---------- */
+  .result {
+    display: flex; align-items: flex-start; gap: 15.04px;
+    border: 0.94px solid var(--line); border-left: 2.82px solid var(--accent);
+    border-radius: 2.82px; background: var(--wash); padding: 8px 11px;
+  }
+
+  .result .big {
+    font-size: 28.20pt; font-weight: 700; line-height: 1;
+    letter-spacing: -0.03em; color: var(--accent);
+  }
+
+  .result p { font-size: 8.46pt; color: var(--muted); }
+
+  .result strong { color: var(--ink); }
+
+  /* ---------- calls to action ---------- */
+  .cta { display: grid; grid-template-columns: 1fr 1fr; gap: 11.28px; }
+
+  .card { border: 0.94px solid var(--line); border-top: 2.82px solid var(--ink); border-radius: 2.82px; padding: 8px 10px; }
+
+  .card h3 { font-size: 9.87pt; margin-bottom: 3.76px; }
+
+  .card p { font-size: 8.27pt; color: var(--muted); margin-bottom: 5px; }
+
+  .card .go { font-size: 8.08pt; color: var(--accent); text-decoration: none; word-break: break-all; }
+
+  pre {
+    margin: 0 0 5px; padding: 6.5px 9.4px; background: var(--ink); color: #e8ecf2;
+    border-radius: 2.82px; font-size: 7.14pt; line-height: 1.45; overflow-x: auto;
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    border-top: 0.94px solid var(--ink); margin-top: 7px; padding-top: 5px;
+    display: flex; justify-content: space-between; align-items: baseline; gap: 15.04px;
+    font-size: 8.08pt;
+  }
+
+  footer .who strong { font-size: 8.84pt; }
+
+  footer .who span { color: var(--muted); }
+
+  /* Plain inline text, not a nested flex: WeasyPrint mis-measures a nowrap
+     flex child here and lays it past the container's right edge. */
+  footer .links { white-space: nowrap; font-size: 7.52pt; }
+
+  footer .links a { color: var(--accent); text-decoration: none; }
+
+  .disclaimer {
+    margin-top: 6px; padding-top: 4px; border-top: 0.94px solid var(--line);
+    font-size: 5.83pt; line-height: 1.35; color: var(--muted);
+  }
+
+  /* ---------- print ---------- */
+  @page { size: A4; margin: 0; }
+
+  @media print {
+    body { padding: 9mm 14mm; }
+    a { color: var(--accent) !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Gemini Agent Platform &middot; A 429-survival capacity ladder</div>
+  <h1>You don&rsquo;t choose<br>a consumption option.<br><span class="thesis">You order them.</span></h1>
+  <p class="standfirst">
+    When a request comes back <span class="mono">RESOURCE_EXHAUSTED</span>, the reflex is to ask the same pool the
+    same question again. A <strong>capacity ladder</strong> asks somewhere else, changing exactly one
+    variable per step &mdash; consumption option, model or endpoint &mdash; until something answers.
+    <strong>No Provisioned Throughput order required.</strong>
+  </p>
+</header>
+
+<section>
+  <h2>Six steps, one variable each &mdash; the default, cost-effective ladder</h2>
+  <table>
+    <thead>
+      <tr><th>Step</th><th>Consumption option</th><th>Model</th><th>Endpoint</th><th>What moved</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="stepno">1</span><span class="mono">flex</span></td><td>Flex PayGo</td><td class="mono">gemini-3.7-flash</td><td class="mono">global</td><td>&mdash;</td></tr>
+      <tr><td><span class="stepno">2</span><span class="mono">standard</span></td><td class="moved">Standard PayGo</td><td class="mono">gemini-3.7-flash</td><td class="mono">global</td><td class="moved">tier</td></tr>
+      <tr><td><span class="stepno">3</span><span class="mono">priority</span></td><td class="moved">Priority PayGo</td><td class="mono">gemini-3.7-flash</td><td class="mono">global</td><td class="moved">tier</td></tr>
+      <tr><td><span class="stepno">4</span><span class="mono">alternative_model</span></td><td>Standard PayGo</td><td class="mono moved">gemini-3.6-flash</td><td class="mono">global</td><td class="moved">model</td></tr>
+      <tr><td><span class="stepno">5</span><span class="mono">multi_region_us</span></td><td>Standard PayGo</td><td class="mono">gemini-3.6-flash</td><td class="mono moved">us</td><td class="moved">endpoint</td></tr>
+      <tr><td><span class="stepno">6</span><span class="mono">multi_region_eu</span></td><td>Standard PayGo</td><td class="mono">gemini-3.6-flash</td><td class="mono moved">eu</td><td class="moved">endpoint</td></tr>
+    </tbody>
+  </table>
+  <p class="ladder-note">
+    <strong>Each step changes exactly one variable</strong> &mdash; consumption option, model or endpoint.
+  </p>
+  <ul class="rule">
+    <li><strong>Steps 1&ndash;3</strong> vary only the <strong>consumption option</strong>: Flex &rarr; Standard &rarr; Priority.</li>
+    <li><strong>Step 4</strong> changes only the <strong>model</strong>.</li>
+    <li><strong>Steps 5&ndash;6</strong> change only the <strong>endpoint</strong>.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Choosing a ladder, or making your own</h2>
+  <table>
+    <thead>
+      <tr><th>Preset</th><th>Shape</th><th>For</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="mono">play_smart_default()</td><td>Flex &rarr; Standard &rarr; Priority &rarr; alternative &rarr; us &rarr; eu <span class="above">&mdash; the ladder above</span></td><td>Latency-tolerant, agentic</td></tr>
+      <tr><td class="mono">latency_first()</td><td>Priority on three models</td><td>Interactive, user-facing</td></tr>
+    </tbody>
+  </table>
+  <p class="ladder-note">
+    Same engine, different order. A ladder is <strong>data, not control flow</strong> &mdash; reorder the list, or
+    write your own in a dozen lines, and your cost and latency posture changes without touching client code.
+  </p>
+</section>
+
+<section>
+  <h2>The 60-second bet</h2>
+  <p class="ladder-note">
+    Step&nbsp;1 caps Flex at 60 seconds, one attempt, no retry. It is not a fallback &mdash; it is a
+    <strong>priced wager</strong>: Flex is a published <strong>50% discount</strong>, so the step spends up to a
+    minute of latency for a coin-flip at half price. The cap is the trick:
+    <strong>Flex&rsquo;s default timeout is ten minutes</strong> &mdash; right for the offline work it is sold for,
+    a stall as a synchronous first hop.
+  </p>
+</section>
+
+<section>
+  <div class="result">
+    <div class="big">90</div>
+    <p>
+      <strong>Tests that ship with it, offline and online</strong> &mdash; 81 need no cloud account and finish in
+      under a second; 9 more drive the real ladder against <strong>your own Google Cloud project</strong>,
+      including a drift check that tells you when the platform has moved. The 429 is real and free to summon:
+      every attempt recorded, lane requested beside lane granted.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="cta">
+    <div class="card">
+      <h3>Read the article</h3>
+      <p>The ladder step by step, the two headers, the 60-second Flex bet, and all 21 traversals with the
+      attempt trails.</p>
+      <a class="go" href="https://github.com/eilonbar/gemini-play-smart/blob/main/ARTICLE.md">Gemini Play Smart &mdash; a 429-survival capacity ladder &rarr;</a>
+    </div>
+    <div class="card">
+      <h3>Run it against your project</h3>
+      <p>Your entitlements, your quota, your regions. The 429 is real and free to summon &mdash; no simulation.</p>
+<pre>git clone https://github.com/eilonbar/gemini-play-smart
+cd gemini-play-smart
+
+python3 run.py</pre>
+      <a class="go" href="https://github.com/eilonbar/gemini-play-smart">github.com/eilonbar/gemini-play-smart &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="who"><strong>Eilon Bar</strong> <span>AI Customer Engineer, Google Cloud</span></div>
+  <div class="links"><a href="https://medium.com/@eilonbar">medium.com/@eilonbar</a>&nbsp;&nbsp;&nbsp;<a href="https://github.com/eilonbar/gemini-play-smart">github.com/eilonbar/gemini-play-smart</a></div>
+</footer>
+
+<div class="disclaimer"><b>Disclaimer.</b> This code is provided "as-is" as a
+demonstration only to illustrate a potential solution. The code does not
+constitute a Google product or service of any kind, and Google offers no
+support, warranties, or liability of any kind with its regard. Whoever chooses
+to use this code accepts all responsibility related to it, including for its
+implementation, use, and ongoing maintenance. For the avoidance of doubt, this
+code is not eligible for the Google Open Source Software Vulnerability Rewards
+Program.</div>
+
+</body>
+</html>
