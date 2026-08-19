@@ -8,7 +8,7 @@
 <style>
   :root {
     --ink:      #14181f;
-    --muted:    #5b6472;
+    --muted:    #2b3138;
     --line:     #d9dee6;
     --accent:   #1a73e8;
     --warn:     #b3261e;
@@ -114,7 +114,9 @@
   .result strong { color: var(--ink); }
 
   /* ---------- calls to action ---------- */
-  .cta { display: grid; grid-template-columns: 1fr 1fr; gap: 11.28px; }
+  /* Uneven on purpose: the right-hand card carries a code block, and the
+     snippet only makes the point if it fits without wrapping. */
+  .cta { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 11.28px; }
 
   .card { border: 0.94px solid var(--line); border-top: 2.82px solid var(--ink); border-radius: 2.82px; padding: 8px 10px; }
 
@@ -125,8 +127,8 @@
   .card .go { font-size: 8.08pt; color: var(--accent); text-decoration: none; word-break: break-all; }
 
   pre {
-    margin: 0 0 5px; padding: 6.5px 9.4px; background: var(--ink); color: #e8ecf2;
-    border-radius: 2.82px; font-size: 7.14pt; line-height: 1.45; overflow-x: auto;
+    margin: 0 0 5px; padding: 5px 9.4px; background: var(--ink); color: #e8ecf2;
+    border-radius: 2.82px; font-size: 7.14pt; line-height: 1.38; overflow-x: auto;
   }
 
   /* The clone URL is clickable, but a code block should still read as code:
@@ -235,10 +237,9 @@
   <div class="result">
     <div class="big">90</div>
     <p>
-      <strong>Tests that ship with it, offline and online</strong> &mdash; 81 need no cloud account and finish in
-      under a second; 9 more drive the real ladder against <strong>your own Google Cloud project</strong>,
-      including a drift check that tells you when the platform has moved. The 429 is real and free to summon:
-      every attempt recorded, lane requested beside lane granted.
+      <strong>Tests that ship with it, offline and online</strong> &mdash; exercise the ladder and the Gemini
+      consumption options against <strong>your own Google Cloud project</strong>. The 429 is real and free
+      to summon: every attempt recorded, option requested beside option granted.
     </p>
   </div>
 </section>
@@ -252,12 +253,16 @@
       <a class="go" href="https://medium.com/@eilonbar/gemini-play-smart-a-429-survival-capacity-ladder-420318216917?sharedUserId=eilonbar">Gemini Play Smart &mdash; a 429-survival capacity ladder &rarr;</a>
     </div>
     <div class="card">
-      <h3>Run it against your project</h3>
-      <p>Your entitlements, your quota, your regions. The 429 is real and free to summon &mdash; no simulation.</p>
-<pre>git clone <a href="https://github.com/eilonbar/gemini-play-smart">https://github.com/eilonbar/gemini-play-smart</a>
-cd gemini-play-smart
+      <h3>Call the ladder instead of calling Gemini directly</h3>
+      <p><a href="https://github.com/eilonbar/gemini-play-smart">Clone it</a> &mdash; two imports and one object, and the same call you already make.</p>
+<pre>from play_smart import CapacityLadder, play_smart_default
+ladder = CapacityLadder(play_smart_default(),
+                        project="my-project")
+result = ladder.generate_content("Summarise this contract.")
 
-python3 run.py</pre>
+print(result.text)
+print(result.step_used)  # 'flex', or wherever it landed
+print(result.table())    # every hop, asked vs granted</pre>
       <a class="go" href="https://github.com/eilonbar/gemini-play-smart">github.com/eilonbar/gemini-play-smart &rarr;</a>
     </div>
   </div>
