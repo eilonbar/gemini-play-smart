@@ -2,73 +2,73 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Play Smart — one answer, three lanes tried</title>
+<title>Play Smart — one answer, four steps offered, three walked</title>
 <style>
   :root {
     --ink:   #14181f;
-    --muted: #2b3138;
+    --muted: #1a1f26;
     --line:  #d9dee6;
+    --arrow: #5b6570;
     --accent:#1a73e8;
     --warn:  #b3261e;
     --wash:  #f5f7fa;
     --good:  #0b7a52;
   }
 
-  @page { size: 800pt 336pt; margin: 0; }
+  /* Landscape, for the README, the article and Medium -- all of which render
+     an image about 900px wide in a column of text, so this has to stay short
+     enough not to push the prose off the screen. The 4:5 portrait sibling for
+     social is docs/concept_linkedin.html; the two carry the same copy and
+     should be edited together. */
+  @page { size: 800pt 490pt; margin: 0; }
 
   * { box-sizing: border-box; }
 
   /* WeasyPrint's flexbox support is partial, so the layout is built from
-     inline-blocks at fixed widths. The answer box is deliberately the same
-     width as a lane and sits directly above the lane that produced it. */
+     inline-blocks at fixed widths. */
   body {
     margin: 0;
-    padding: 24pt 34pt 20pt;
-    width: 800pt; height: 336pt;
+    padding: 22pt 34pt;
+    width: 800pt; height: 490pt;
     font-family: "DejaVu Sans", sans-serif;
     color: var(--ink);
     background: #fff;
   }
 
   h1 {
-    margin: 0 0 9pt;
-    font-size: 21pt; line-height: 1.18; font-weight: 700;
+    margin: 0 0 10pt;
+    font-size: 21pt; line-height: 1.16; font-weight: 700;
     letter-spacing: -0.015em;
   }
 
-  h1 .dim { font-size: 18pt; color: var(--muted); font-weight: 400; }
-
-  .deck {
-    margin: 0 0 19pt;
-    font-size: 12.6pt; line-height: 1.4; color: var(--muted);
-    max-width: 730pt;
+  h1 .dim {
+    display: block; margin-top: 4pt;
+    font-size: 15pt; line-height: 1.28; color: var(--muted); font-weight: 400;
   }
-
-  .deck b { color: var(--ink); font-weight: 700; }
 
   .tier-label {
     font-size: 9.4pt; font-weight: 700; letter-spacing: 0.16em;
     text-transform: uppercase; color: var(--muted);
-    margin-bottom: 8pt;
+    margin-bottom: 6pt;
   }
 
   .band { font-size: 0; }
 
-  .band .cell { display: inline-block; vertical-align: middle; font-size: 10pt; }
+  .band .cell { display: inline-block; vertical-align: middle; }
 
-  /* ---------- above the line: the caller ---------- */
-  .who { width: 62pt; }
+  /* ---------- above the line: one call in, one answer out ---------- */
+  .who { width: 50pt; }
 
-  .flow { width: 442pt; text-align: center; }
+  .flow { width: 258pt; text-align: center; }
 
-  .flow .txt { font-size: 11pt; color: var(--muted); }
+  .flow .txt { font-size: 10.4pt; line-height: 1.3; color: var(--muted); }
 
-  .flow svg { display: block; margin: 4pt auto 0; }
+  .flow svg { display: block; margin: 5pt auto 0; }
 
   .answer {
-    width: 212pt;
+    width: 416pt;
     border: 1.4pt solid var(--good); border-radius: 5pt;
-    padding: 9pt 14pt; background: #f2faf6;
+    padding: 8pt 14pt; background: #f2faf6;
   }
 
   .answer .big { font-size: 19pt; font-weight: 700; color: var(--good); }
@@ -77,27 +77,58 @@
 
   /* ---------- the waterline ---------- */
   .waterline {
-    margin: 17pt 0 15pt;
+    margin: 14pt 0 12pt;
     border: 0; border-top: 1.2pt dashed var(--line);
   }
 
+  .under-note {
+    margin: -2pt 0 8pt; font-size: 10.6pt; line-height: 1.35; color: var(--muted);
+  }
+
+  .under-note b { color: var(--ink); font-weight: 700; }
+
   /* ---------- below the line: the ladder ---------- */
+  /* The rail is the point of the lower half: it brackets every attempt into
+     the single call drawn above them. Without it the steps read as separate
+     requests the user waited through. */
+  .inside {
+    border-left: 3pt solid var(--accent);
+    padding-left: 14pt;
+  }
+
   .lane {
-    width: 212pt;
+    width: 715pt;
     border: 1pt solid var(--line); border-radius: 5pt;
-    padding: 8pt 14pt; background: var(--wash);
+    padding: 7pt 14pt; background: var(--wash);
+  }
+
+  /* three columns per rung: which step, why it is there, what it returned.
+     The middle column is what the short landscape format buys -- stacked
+     under the name it would cost another 100pt of height. */
+  .lane .row { font-size: 0; }
+
+  .lane .left { display: inline-block; width: 34%; vertical-align: top; }
+
+  .lane .mid {
+    display: inline-block; width: 44%; vertical-align: top;
+    padding-right: 12pt;
+    font-size: 9.8pt; line-height: 1.3; color: var(--muted);
+  }
+
+  .lane .mid b { color: var(--ink); font-weight: 700; }
+
+  .lane .verdict {
+    display: inline-block; width: 22%; vertical-align: top;
+    text-align: right;
+    font-size: 10.6pt; font-weight: 700; color: var(--warn);
   }
 
   .lane .model {
     font-family: "DejaVu Sans Mono", monospace;
-    font-size: 10.2pt; color: var(--muted); margin-bottom: 2pt;
+    font-size: 9.2pt; color: var(--muted); margin-bottom: 1pt;
   }
 
-  .lane .name {
-    font-size: 13.2pt; font-weight: 700; color: var(--muted);
-  }
-
-  .lane .verdict { font-size: 10.4pt; font-weight: 700; color: var(--warn); margin-top: 3pt; }
+  .lane .name { font-size: 13.2pt; font-weight: 700; color: var(--muted); }
 
   .lane.win { border-color: var(--good); border-width: 1.4pt; background: #f2faf6; }
 
@@ -106,26 +137,56 @@
 
   .lane.win .verdict { color: var(--good); }
 
-  .hop { width: 40pt; text-align: center; color: var(--line); font-size: 20pt; }
+  /* step 1 does not fail by refusal -- it runs out of its 60s budget, which is
+     the wager, not a capacity problem. Not red. */
+  .lane .verdict.soft { color: var(--arrow); font-weight: 400; }
 
-  /* ---------- footer ---------- */
-  .foot { margin-top: 18pt; font-size: 11.3pt; color: var(--muted); }
+  /* the one line that ties the bottom of the figure back to the top */
+  .lane .tieback {
+    margin-top: 3pt; text-align: right;
+    font-size: 9.6pt; color: var(--good);
+  }
 
-  .foot b { color: var(--ink); }
+  .lane.pending {
+    border-style: dashed; border-color: #b9c1cb; background: #fff;
+  }
+
+  .lane.pending .name { font-size: 11.4pt; color: #616b77; }
+
+  /* the longest label in the figure -- borrow from the middle column, which
+     has the shortest caption, rather than let it wrap */
+  .lane.pending .left { width: 41%; }
+
+  .lane.pending .mid { width: 37%; }
+
+  .lane.pending .mid,
+  .lane.pending .verdict { color: #616b77; font-size: 9.8pt; }
+
+  .hop {
+    width: 715pt; text-align: center;
+    color: var(--arrow); font-size: 14pt; font-weight: 700; line-height: 1;
+    margin: 4pt 0;
+  }
+
+  .hop .why {
+    font-size: 9.4pt; font-weight: 400; color: var(--muted); margin-left: 8pt;
+    vertical-align: 2pt;
+  }
+
+  .hop.pending { color: #b9c1cb; }
+
+  .hop.pending .why { color: #616b77; }
 </style>
 </head>
 <body>
 
-<h1>Happy user, got their answer, no failure.<br>
-<span class="dim">Underneath, the ladder was refused twice and answered on the third step.</span></h1>
-
-<p class="deck">You customise the ladder as you wish in each step &mdash;
-  a different <b>tier</b>, <b>model</b> or <b>endpoint</b>.</p>
+<h1>Happy user, got their answer, no failure.
+<span class="dim">Underneath, this unlucky call walked three steps. Most stop at the first.</span></h1>
 
 <div class="tier-label">What the user sees</div>
 <div class="band">
   <span class="cell who">
-    <svg width="52pt" height="52pt" viewBox="0 0 64 64" fill="none"
+    <svg width="44pt" height="44pt" viewBox="0 0 64 64" fill="none"
          stroke="#1a73e8" stroke-width="3.4" stroke-linecap="round">
       <circle cx="32" cy="21" r="13"/>
       <circle cx="27" cy="18" r="1" fill="#1a73e8" stroke="none"/>
@@ -135,10 +196,10 @@
     </svg>
   </span>
   <span class="cell flow">
-    <span class="txt">one request, one call, no error handling</span>
-    <svg width="360pt" height="10pt" viewBox="0 0 360 10">
-      <line x1="0" y1="5" x2="348" y2="5" stroke="#d9dee6" stroke-width="1.6"/>
-      <polygon points="347,0.5 359,5 347,9.5" fill="#d9dee6"/>
+    <span class="txt">one request, one call,<br>no error handling</span>
+    <svg width="240pt" height="11pt" viewBox="0 0 240 11">
+      <line x1="0" y1="5.5" x2="221" y2="5.5" stroke="#5b6570" stroke-width="2.2"/>
+      <polygon points="220,1 239,5.5 220,10" fill="#5b6570"/>
     </svg>
   </span>
   <span class="cell answer">
@@ -149,25 +210,55 @@
 
 <hr class="waterline">
 
-<div class="tier-label">What the client actually did</div>
-<div class="band">
-  <span class="cell lane">
-    <div class="model">gemini-3.7-flash</div>
-    <div class="name">Flex</div>
-    <div class="verdict">429 &middot; refused</div>
-  </span>
-  <span class="cell hop">&#8594;</span>
-  <span class="cell lane">
-    <div class="model">gemini-3.7-flash</div>
-    <div class="name">Standard PayGo</div>
-    <div class="verdict">429 &middot; refused</div>
-  </span>
-  <span class="cell hop">&#8594;</span>
-  <span class="cell lane win">
-    <div class="model">gemini-3.7-flash</div>
-    <div class="name">Priority PayGo</div>
-    <div class="verdict">200 &middot; answered</div>
-  </span>
+<div class="tier-label">Inside that one call</div>
+<p class="under-note"><b>Each step changes exactly one variable</b> &mdash; <b>tier</b>,
+  <b>model</b> or <b>endpoint</b> &mdash; and the ladder stops at the first that answers.</p>
+
+<div class="inside">
+  <div class="lane">
+    <div class="row">
+      <span class="left">
+        <span class="model">gemini-3.7-flash</span>
+        <div class="name">Flex</div>
+      </span>
+      <span class="mid"><b>Usually answers inside the 60s cap in my runs, at half price.</b></span>
+      <span class="verdict soft">60s cap &middot; moved on</span>
+    </div>
+  </div>
+  <div class="hop">&#8595;<span class="why">next step, same request</span></div>
+  <div class="lane">
+    <div class="row">
+      <span class="left">
+        <span class="model">gemini-3.7-flash</span>
+        <div class="name">Standard PayGo</div>
+      </span>
+      <span class="mid"><b>Catches the request when the Flex bet does not pay out.</b></span>
+      <span class="verdict">429 &middot; refused</span>
+    </div>
+  </div>
+  <div class="hop">&#8595;<span class="why">next step, same request</span></div>
+  <div class="lane win">
+    <div class="row">
+      <span class="left">
+        <span class="model">gemini-3.7-flash</span>
+        <div class="name">Priority PayGo</div>
+      </span>
+      <span class="mid"><b>Standard answered every time in my runs.</b> The ladder only
+        falls this far on a transient refusal.</span>
+      <span class="verdict">200 &middot; answered</span>
+    </div>
+    <div class="tieback">&#8593; this is the 200 the user got</div>
+  </div>
+  <div class="hop pending">&#8595;<span class="why">never ran &mdash; the ladder had already answered</span></div>
+  <div class="lane pending">
+    <div class="row">
+      <span class="left">
+        <div class="name">Another Gemini model, then multi-region</div>
+      </span>
+      <span class="mid">Three more below, for the day a whole model or endpoint is the problem.</span>
+      <span class="verdict">not reached</span>
+    </div>
+  </div>
 </div>
 
 </body>

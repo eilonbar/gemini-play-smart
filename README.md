@@ -10,7 +10,7 @@ variable per step, until one of them answers.
 This is a demonstration of a concept, not a production library. Read it, take
 the pattern, write your own.
 
-![Happy user, got their answer, no failure. Underneath, the ladder was refused twice and answered on the third step. Above the line, what the user sees: one request, one call, and a 200 OK. Below the line, what the client actually did, all three on gemini-3.7-flash: Flex refused with a 429, Standard PayGo refused with a 429, Priority PayGo answered.](docs/concept.png)
+![Happy user, got their answer, no failure. Underneath, this unlucky call walked three steps; most stop at the first. Above the line, what the user sees: one request, one call, no error handling, and a 200 OK — no 429 ever reached the user. Below the line, inside that one call, each step changes exactly one variable — tier, model or endpoint — and the ladder stops at the first that answers. On gemini-3.7-flash: Flex hit its 60-second cap and moved on, Standard PayGo returned a 429, Priority PayGo answered with a 200, and that is the 200 the user got. A fourth step, another model then multi-region, was never reached.](docs/concept.png)
 
 [Provisioned Throughput](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/provisioned-throughput)
 is an excellent consumption option for real-time production and critical

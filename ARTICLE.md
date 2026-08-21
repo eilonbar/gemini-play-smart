@@ -2,10 +2,11 @@
 
 ### Creative failover on the Gemini Agent Platform, combining consumption options, models and endpoints. No Provisioned Throughput order required.
 
-![Happy user, got their answer, no failure. Underneath, the ladder was refused twice and answered on the third step. You customise the ladder as you wish in each step — a different tier, model or endpoint. Above the line, what the user sees: one request, one call, and a 200 OK. Below the line, what the client actually did, all three on gemini-3.7-flash: Flex refused with a 429, Standard PayGo refused with a 429, Priority PayGo answered.](docs/concept.png)
+![Happy user, got their answer, no failure. Underneath, this unlucky call walked three steps; most stop at the first. Above the line, what the user sees: one request, one call, no error handling, and a 200 OK — no 429 ever reached the user. Below the line, inside that one call, each step changes exactly one variable — tier, model or endpoint — and the ladder stops at the first that answers. On gemini-3.7-flash: Flex hit its 60-second cap and moved on, Standard PayGo returned a 429, Priority PayGo answered with a 200, and that is the 200 the user got. A fourth step, another model then multi-region, was never reached.](docs/concept.png)
 
-*The caller makes one request and gets one answer. Underneath, two pools
-refused and a third answered. Image by author.*
+*The caller makes one request and gets one answer. Underneath, the first step
+ran out of its time budget, the second was refused, and the third answered. Image
+by author.*
 
 ---
 

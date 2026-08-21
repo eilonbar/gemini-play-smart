@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Play Smart — one answer, three lanes tried (4:5 for social)</title>
+<style>
+  :root {
+    --ink:   #14181f;
+    --muted: #1a1f26;
+    --line:  #d9dee6;
+    --arrow: #5b6570;
+    --accent:#1a73e8;
+    --warn:  #b3261e;
+    --wash:  #f5f7fa;
+    --good:  #0b7a52;
+  }
+
+  /* 4:5 portrait. LinkedIn shows this ratio in the feed without cropping, and
+     it is the tallest it will take -- which is what buys the type its size.
+     The landscape original is docs/concept.html; keep the two in step. */
+  @page { size: 800pt 1000pt; margin: 0; }
+
+  * { box-sizing: border-box; }
+
+  /* WeasyPrint's flexbox support is partial, so the layout is built from
+     inline-blocks at fixed widths, as in the landscape figure. */
+  body {
+    margin: 0;
+    padding: 34pt 40pt;
+    width: 800pt; height: 1000pt;
+    font-family: "DejaVu Sans", sans-serif;
+    color: var(--ink);
+    background: #fff;
+  }
+
+  h1 {
+    margin: 0 0 12pt;
+    font-size: 31pt; line-height: 1.14; font-weight: 700;
+    letter-spacing: -0.018em;
+  }
+
+  /* the subline wraps, so it carries its own leading rather than inheriting
+     the headline's */
+  h1 .dim {
+    display: block; margin-top: 7pt;
+    font-size: 24pt; line-height: 1.26; color: var(--muted); font-weight: 400;
+  }
+
+  .tier-label {
+    font-size: 15pt; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 10pt;
+  }
+
+  .band { font-size: 0; margin-bottom: 4pt; }
+
+  .band .cell { display: inline-block; vertical-align: middle; }
+
+  /* ---------- above the line: one call in, one answer out ---------- */
+  .who { width: 68pt; }
+
+  .flow { width: 258pt; text-align: center; }
+
+  .flow .txt { font-size: 16pt; line-height: 1.3; color: var(--muted); }
+
+  .flow svg { display: block; margin: 8pt auto 0; }
+
+  .answer {
+    width: 394pt;
+    border: 2pt solid var(--good); border-radius: 8pt;
+    padding: 12pt 20pt; background: #f2faf6;
+  }
+
+  .answer .big { font-size: 32pt; font-weight: 700; color: var(--good); }
+
+  .answer .sub { font-size: 17pt; color: var(--muted); margin-top: 4pt; }
+
+  /* ---------- the waterline ---------- */
+  .waterline {
+    margin: 24pt 0 20pt;
+    border: 0; border-top: 2pt dashed var(--line);
+  }
+
+  .under-note {
+    margin: -4pt 0 12pt; font-size: 17pt; line-height: 1.35; color: var(--muted);
+  }
+
+  .under-note b { color: var(--ink); font-weight: 700; }
+
+  /* ---------- below the line: the ladder ---------- */
+  /* The rail is the point of the lower half: it brackets all three attempts
+     into the single call drawn above them. Without it the steps read as three
+     separate requests the user waited through. */
+  .inside {
+    border-left: 4pt solid var(--accent);
+    padding-left: 20pt;
+  }
+
+  .lane {
+    width: 696pt;
+    border: 1.6pt solid var(--line); border-radius: 8pt;
+    padding: 12pt 20pt; background: var(--wash);
+  }
+
+  .lane .model {
+    font-family: "DejaVu Sans Mono", monospace;
+    font-size: 15pt; color: var(--muted); margin-bottom: 3pt;
+  }
+
+  /* name on the left, verdict flushed right on the same baseline */
+  .lane .row { font-size: 0; }
+
+  .lane .name {
+    display: inline-block; width: 58%; vertical-align: baseline;
+    font-size: 26pt; font-weight: 700; color: var(--muted);
+  }
+
+  .lane .verdict {
+    display: inline-block; width: 42%; vertical-align: baseline;
+    text-align: right;
+    font-size: 21pt; font-weight: 700; color: var(--warn);
+  }
+
+  .lane.win { border-color: var(--good); border-width: 2pt; background: #f2faf6; }
+
+  .lane.win .model,
+  .lane.win .name { color: var(--ink); }
+
+  .lane.win .verdict { color: var(--good); }
+
+  .lane .role {
+    margin-top: 3pt; font-size: 15pt; line-height: 1.22; color: var(--muted);
+  }
+
+  .lane .role b { color: var(--ink); font-weight: 700; }
+
+  /* step 1 does not fail by refusal -- it fails by running out of its 60s
+     budget, which is the wager, not a capacity problem. Not red. */
+  .lane .verdict.soft { color: var(--arrow); }
+
+  /* the one line that ties the bottom of the figure back to the top */
+  .lane .tieback {
+    margin-top: 3pt; text-align: right;
+    font-size: 16pt; color: var(--good);
+  }
+
+  .lane.pending {
+    border-style: dashed; border-color: #b9c1cb; background: #fff;
+  }
+
+  /* the longest label in the figure, and the least important -- give it the
+     width and take back the type size rather than let it wrap */
+  .lane.pending .name { width: 74%; font-size: 19pt; color: #616b77; }
+
+  .lane.pending .verdict { width: 26%; font-size: 18pt; color: #616b77; }
+
+  .lane.pending .role { color: #616b77; }
+
+  .hop.pending { color: #b9c1cb; font-size: 24pt; }
+
+  .hop.pending .why { color: #616b77; }
+
+  .hop {
+    width: 696pt; text-align: center;
+    color: var(--arrow); font-size: 26pt; font-weight: 700; line-height: 1;
+    margin: 6pt 0;
+  }
+
+  .close {
+    margin: 20pt 0 0; font-size: 18pt; line-height: 1.4; color: var(--muted);
+  }
+
+  .close b { color: var(--ink); font-weight: 700; }
+
+  .hop .why {
+    font-family: "DejaVu Sans", sans-serif;
+    font-size: 15pt; font-weight: 400; color: var(--muted); margin-left: 12pt;
+    vertical-align: 5pt;
+  }
+</style>
+</head>
+<body>
+
+<h1>Happy user, got their answer, no failure.
+<span class="dim">Underneath, this unlucky call walked three steps. Most stop at the first.</span></h1>
+
+<div class="tier-label">What the user sees</div>
+<div class="band">
+  <span class="cell who">
+    <svg width="58pt" height="58pt" viewBox="0 0 64 64" fill="none"
+         stroke="#1a73e8" stroke-width="3.4" stroke-linecap="round">
+      <circle cx="32" cy="21" r="13"/>
+      <circle cx="27" cy="18" r="1" fill="#1a73e8" stroke="none"/>
+      <circle cx="37" cy="18" r="1" fill="#1a73e8" stroke="none"/>
+      <path d="M26 25 Q32 30.5 38 25"/>
+      <path d="M11 57 Q11 40 32 40 Q53 40 53 57"/>
+    </svg>
+  </span>
+  <span class="cell flow">
+    <span class="txt">one request, one call,<br>no error handling</span>
+    <svg width="250pt" height="16pt" viewBox="0 0 250 16">
+      <line x1="0" y1="8" x2="230" y2="8" stroke="#5b6570" stroke-width="3.4"/>
+      <polygon points="228,1 249,8 228,15" fill="#5b6570"/>
+    </svg>
+  </span>
+  <span class="cell answer">
+    <div class="big">200 OK</div>
+    <div class="sub">no 429 ever reached the user</div>
+  </span>
+</div>
+
+<hr class="waterline">
+
+<div class="tier-label">Inside that one call</div>
+<p class="under-note"><b>Each step changes exactly one variable</b> &mdash; <b>tier</b>,
+  <b>model</b> or <b>endpoint</b> &mdash; and the ladder stops at the first that answers.</p>
+
+<div class="inside">
+  <div class="lane">
+    <div class="model">gemini-3.7-flash</div>
+    <div class="row"><span class="name">Flex</span><span class="verdict soft">60s cap &middot; moved on</span></div>
+    <div class="role"><b>Usually answers inside the 60s cap in my runs, at half price.</b></div>
+  </div>
+  <div class="hop">&#8595;<span class="why">next step, same request</span></div>
+  <div class="lane">
+    <div class="model">gemini-3.7-flash</div>
+    <div class="row"><span class="name">Standard PayGo</span><span class="verdict">429 &middot; refused</span></div>
+    <div class="role"><b>Catches the request when the Flex bet does not pay out.</b></div>
+  </div>
+  <div class="hop">&#8595;<span class="why">next step, same request</span></div>
+  <div class="lane win">
+    <div class="model">gemini-3.7-flash</div>
+    <div class="row"><span class="name">Priority PayGo</span><span class="verdict">200 &middot; answered</span></div>
+    <div class="role"><b>Standard answered every time in my runs.</b> The ladder only
+      falls this far on a transient refusal.</div>
+    <div class="tieback">&#8593; this is the 200 the user got</div>
+  </div>
+  <div class="hop pending">&#8595;<span class="why">never ran &mdash; the ladder had already answered</span></div>
+  <div class="lane pending">
+    <div class="row"><span class="name">Another Gemini model, then multi-region</span><span class="verdict">not reached</span></div>
+    <div class="role">Three more below, for the day a whole model or endpoint is the problem.</div>
+  </div>
+</div>
+
+
+</body>
+</html>
