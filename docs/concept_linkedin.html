@@ -15,10 +15,13 @@
     --good:  #0b7a52;
   }
 
-  /* 4:5 portrait. LinkedIn shows this ratio in the feed without cropping, and
-     it is the tallest it will take -- which is what buys the type its size.
-     The landscape original is docs/concept.html; keep the two in step. */
-  @page { size: 800pt 1000pt; margin: 0; }
+  /* Portrait for social. 4:5 (800x1000) is the tallest LinkedIn renders
+     without cropping, but the content only reaches 913pt and a blank ninth of
+     the frame reads as a mistake -- worse next to LinkedIn's dark pillarbox,
+     which is what surrounds any portrait image there. Trimmed to the ink plus
+     the top padding. The landscape original is docs/concept.html; keep the
+     two in step. */
+  @page { size: 800pt 947pt; margin: 0; }
 
   * { box-sizing: border-box; }
 
@@ -27,7 +30,7 @@
   body {
     margin: 0;
     padding: 34pt 40pt;
-    width: 800pt; height: 1000pt;
+    width: 800pt; height: 947pt;
     font-family: "DejaVu Sans", sans-serif;
     color: var(--ink);
     background: #fff;
