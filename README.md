@@ -298,15 +298,17 @@ one request at a time, progress on stderr, table on stdout.
 
 ## Instructions for an AI agent
 
-**Running this with an AI agent?** Point it at this repo and say:
+**Running this with an AI agent?** Say:
 
 ```
-run according to instructions for AI agent in the readme
+clone https://github.com/eilonbar/gemini-play-smart and run according to
+instructions for AI agent in the readme
 ```
 
-That is the whole prompt. Everything below is addressed to the agent, not to
-you — it covers setup, the order to run things in, what it may spend, which
-surprising results are expected, and what to report back.
+That is the whole prompt — the agent does not need the repo open already.
+Everything below is addressed to the agent, not to you: setup, the order to
+run things in, what it may spend, which surprising results are expected, and
+what to report back.
 
 ---
 
