@@ -90,7 +90,11 @@ class CapacityLadder:
         Everything that varies per step -- headers, timeout, retry policy --
         rides on the request instead, so a handful of clients covers any
         ladder. For multi-region locations the SDK derives the
-        ``aiplatform.{loc}.rep.googleapis.com`` base URL itself.
+        ``aiplatform.{loc}.rep.googleapis.com`` base URL itself -- but only
+        from google-genai 1.69.0, which is why ``pyproject.toml`` floors
+        there. Older versions concatenate ``{loc}-aiplatform.googleapis.com``
+        and 400. Do not set ``base_url`` here to compensate: on a supported
+        SDK it is a no-op that hardcodes a host Google owns the right to move.
         """
         if location not in self._clients:
             self._clients[location] = genai.Client(

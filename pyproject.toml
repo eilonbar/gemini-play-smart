@@ -26,7 +26,12 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = ["google-genai>=1.40.0"]
+# 1.69.0 is the first release that derives the multi-region REP base URL from
+# location="us"/"eu". Earlier versions fall through to the single-region
+# concatenation and build us-aiplatform.googleapis.com, a host that does not
+# exist, so the multi_region steps fail with a non-retryable 400 that looks
+# like a bug in this package. See play_smart/ladder.py:_client.
+dependencies = ["google-genai>=1.69.0"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "ruff>=0.6"]

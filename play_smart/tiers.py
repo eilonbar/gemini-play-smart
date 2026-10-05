@@ -91,7 +91,8 @@ EXPECTED_TRAFFIC_TYPE: dict[Tier, tuple[str, ...]] = {
 
 #: Multi-region endpoints. These keep ML processing inside a jurisdiction and
 #: are reached via ``https://aiplatform.{loc}.rep.googleapis.com`` -- the Gen AI
-#: SDK derives that base URL for you when ``location`` is ``"us"`` or ``"eu"``.
+#: SDK derives that base URL for you when ``location`` is ``"us"`` or ``"eu"``,
+#: from version 1.69.0 onward. See the dependency floor in ``pyproject.toml``.
 MULTI_REGION_LOCATIONS = frozenset({"us", "eu"})
 
 #: The global endpoint. Routes dynamically across capacity and is the *only*
