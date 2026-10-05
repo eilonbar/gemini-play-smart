@@ -296,6 +296,100 @@ isolation* — the numbers that decide a ladder's order — and never traverses
 one; `bench_ladder.py` above measures what traversing costs. Same conventions:
 one request at a time, progress on stderr, table on stdout.
 
+## Instructions for an AI agent
+
+**Running this with an AI agent?** Point it at this repo and say:
+
+```
+run according to instructions for AI agent in the readme
+```
+
+That is the whole prompt. Everything below is addressed to the agent, not to
+you — it covers setup, the order to run things in, what it may spend, which
+surprising results are expected, and what to report back.
+
+---
+
+Agent: this section is that instruction. Follow it start to finish, then
+report back.
+
+**Set up in a fresh directory.** Clone this repo somewhere new — do not reuse
+an existing clone or an existing `.venv`. A stale virtualenv is the most common
+way to end up with a `google-genai` below the floor in `pyproject.toml`, and
+the multi-region steps then fail for reasons that have nothing to do with this
+code.
+
+```bash
+python3 run.py
+```
+
+That single command builds a venv, installs the package, and runs the 81
+offline tests.
+
+**Python.** This repo needs 3.10 or newer, and the `python3` on the box may be
+older. If it is, use any 3.10+ interpreter already installed — check
+`/usr/local/bin`, `/opt/homebrew/bin`, `/Library/Frameworks/Python.framework`,
+and `pyenv` — and say which one you used. Do **not** install a Python, do
+**not** edit `requires-python`, and do not otherwise work around the floor. If
+no 3.10+ interpreter exists anywhere, stop and say so.
+
+**SDK version.** Report the resolved `google-genai` version, but do not gate on
+it. The dependency floor in `pyproject.toml` is the real guard.
+
+**Credentials.** Assume the operator has already run `gcloud auth
+application-default login`. If credentials are missing, `run.py` exits saying
+exactly what is absent — report that rather than attempting a login yourself.
+
+**Project id.** Do not ask for it, and do not print it in your report or in any
+output you quote — write `<PROJECT>` instead. Resolve it yourself, in this
+order:
+
+1. `$GOOGLE_CLOUD_PROJECT`, if already set
+2. `gcloud config get-value project`
+3. the `quota_project_id` field in the ADC file
+
+Export it before the live targets. If all three fail, stop — do not guess one.
+These targets bill real money.
+
+**The run.** In order, substituting whichever interpreter you settled on. Stop
+if one fails, except `check` — see below.
+
+```bash
+python3 run.py check     # declared matrix vs. the live API
+python3 run.py live      # the live pytest suite
+python3 run.py headers   # both Priority spellings against a Flex control
+python3 run.py ladder    # forces a real 429, watch the recovery
+python3 run.py matrix    # the full model × tier × endpoint matrix
+python3 run.py sweep     # 21 traversals, forced to fail at every depth
+```
+
+`ladder` takes about a minute and `sweep` four to seven. That is normal — let
+them finish, do not kill them.
+
+**Do not run `bench`.** Ask first. It is 20 samples per step, six to ten
+minutes, and the most expensive target here. `matrix` and `sweep` also make
+real billable calls; report roughly how many you made.
+
+**Three results look like failures and may not be.** Do not pattern-match these
+and wave them through — for each, say what in the output distinguishes the
+benign case from a genuine fault.
+
+- `check` exits non-zero on **matrix drift**. The matrix declared in
+  [`play_smart/tiers.py`](play_smart/tiers.py) is a dated cache of a live
+  observation, not a contract, and the platform moves without announcement. A
+  `DRIFT` report is the detector working. Record exactly what drifted and keep
+  going — `live` runs the same check and fails the same way, so note it and
+  continue to `headers`. A crash, an auth error or a timeout from `check` is a
+  real failure; stop for those.
+- The `priority` rows report `ON_DEMAND` rather than `ON_DEMAND_PRIORITY`
+  unless the project has Priority PayGo enabled.
+- `gemini-2.5-flash` returns 404 on the `us` and `eu` endpoints.
+
+**Report.** Per-target pass/fail with exit codes and the headline numbers, plus
+the raw output of anything that failed. Call out any judgment call you made
+rather than burying it. Do not edit the repo to make something pass, and do not
+commit or push — confirm the working tree is clean when you finish.
+
 ## Layout
 
 ```
